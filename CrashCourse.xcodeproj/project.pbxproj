@@ -25,6 +25,7 @@
 		08DCEFA72744290E004657A0 /* Amount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DCEFA62744290E004657A0 /* Amount.swift */; };
 		668F23E22765A8070086C920 /* ListViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668F23E12765A8070086C920 /* ListViewControllerTests.swift */; };
 		66B11A0327661C530099A804 /* FriendsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B11A0227661C530099A804 /* FriendsTests.swift */; };
+		66B11A05276650AB0099A804 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B11A04276650AB0099A804 /* FriendsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		668F23DF2765A8070086C920 /* CrashCourseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrashCourseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		668F23E12765A8070086C920 /* ListViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewControllerTests.swift; sourceTree = "<group>"; };
 		66B11A0227661C530099A804 /* FriendsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTests.swift; sourceTree = "<group>"; };
+		66B11A04276650AB0099A804 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 				080163C92743D39600930886 /* Assets.xcassets */,
 				080163CB2743D39600930886 /* LaunchScreen.storyboard */,
 				080163CE2743D39600930886 /* Info.plist */,
+				66B11A04276650AB0099A804 /* FriendsViewController.swift */,
 			);
 			path = CrashCourse;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				080164862743D61B00930886 /* User.swift in Sources */,
+				66B11A05276650AB0099A804 /* FriendsViewController.swift in Sources */,
 				0801647F2743D61B00930886 /* FriendsCache.swift in Sources */,
 				0801647B2743D61B00930886 /* ListViewController.swift in Sources */,
 				080164842743D61B00930886 /* MainTabBarController.swift in Sources */,
