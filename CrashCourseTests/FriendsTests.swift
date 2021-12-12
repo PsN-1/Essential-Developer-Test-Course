@@ -57,6 +57,10 @@ class FriendsViewController: UITableViewController {
         
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        show(friends[indexPath.row])
+    }
 }
 
 class FriendsServiceSpy: FriendsService {
@@ -84,13 +88,23 @@ class FriendsTests: XCTestCase {
         let service = FriendsServiceSpy()
         let sut = FriendsViewController(service: service)
         
-        sut.simulateViewWillAppear()
+        sut.loadViewIfNeeded()
         
-        XCTAssertEqual(service.loadFriendsCallCount, 1)
+        XCTAssertEqual(service.loadFriendsCallCount, 0)
         
     }
     
     func test_viewWillAppear_LoadsFriendsFromAPI() {
+       
+        let service = FriendsServiceSpy()
+        let sut = FriendsViewController(service: service)
+        
+        sut.simulateViewWillAppear()
+        
+        XCTAssertEqual(service.loadFriendsCallCount, 1)
+    }
+    
+    func test_viewWillAppear_successfulAPIResponse_showsFriends() {
         let friend1 = Friend(id: UUID(), name: "friend1", phone: "phone1")
         let friend2 = Friend(id: UUID(), name: "friend2", phone: "phone2")
         let service = FriendsServiceSpy(result: [friend1, friend2])
@@ -125,6 +139,42 @@ class FriendsTests: XCTestCase {
         sut.simulateViewWillAppear()
         
         sut.assert(isRendering: [friend])
+    }
+    
+    func test_viewWillAppear_successAfterFailedAPIResponse_2time_showsFriends() {
+        let friend = Friend(id: UUID(), name: "a friend", phone: "a phone")
+        let service = FriendsServiceSpy(results: [
+            .failure(AnyError(errorDescription: "1st error")),
+            .failure(AnyError(errorDescription: "2nd error")),
+            .success([friend])
+        ])
+        let sut = TestableFriendsViewController(service: service)
+        
+        sut.simulateViewWillAppear()
+        
+        sut.assert(isRendering: [friend])
+    }
+    
+    func test_friendSelection_showsFriendDetails() {
+        let friend = Friend(id: UUID(), name: "a friend", phone: "a phone")
+        let service = FriendsServiceSpy(results: [
+            .success([friend])
+        ])
+        let sut = TestableFriendsViewController(service: service)
+        let navigation = NonAnimatedUINavigationController(rootViewController: sut)
+        
+        sut.simulateViewWillAppear()
+        sut.selectFriend(at: 0)
+        
+        let detail = navigation.topViewController as? FriendDetailsViewController
+        
+        XCTAssertEqual(detail?.friend, friend)
+    }
+}
+
+private class NonAnimatedUINavigationController: UINavigationController {
+    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        super.pushViewController(viewController, animated: false)
     }
 }
 
@@ -171,6 +221,11 @@ private extension FriendsViewController {
     
     func friendPhone(at row: Int) -> String? {
         friendCell(at: row)?.detailTextLabel?.text
+    }
+    
+    func selectFriend(at row: Int) {
+        let indexPath = IndexPath(row: row, section: friendsSection)
+        tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
     }
     
     private func friendCell(at row: Int) -> UITableViewCell? {
