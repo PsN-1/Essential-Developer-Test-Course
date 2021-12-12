@@ -5,7 +5,9 @@
 import XCTest
 @testable import CrashCourse
 
-class FriendsTests: XCTestCase {
+
+
+class ListViewControllerTests: XCTestCase {
 
     func test_reloadFriends_asPremiumUser_withoutConnection_showsError() {
         let service = FriendsAPIStub(result: .success([
