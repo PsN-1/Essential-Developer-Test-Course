@@ -1,29 +1,71 @@
-//	
+//
 // Copyright © Essential Developer. All rights reserved.
 //
 
 import XCTest
+@testable import CrashCourse
 
-class CrashCourseTests: XCTestCase {
+class FriendsTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func test_reloadFriends_asPremiumUser_withoutConnection_showsError() {
+        let service = FriendsAPIStub(result: .success([
+            makeFriend(),
+            makeFriend()
+        ]))
+        let sut = TestableListViewController()
+        sut.user = makePremiumUser()
+        sut.fromFriendsScreen = true
+        sut.friendsService = service
+        
+        sut.simulateFirstRequest()
+        service.result = .failure(AnyError())
+        sut.simulateReloadRequest()
+        
+        let errorAlert = sut.presentedVC as? UIAlertController
+        XCTAssertTrue(sut.presentedVC is UIAlertController)
+        XCTAssertEqual(errorAlert?.title, "Error")
     }
+}
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+private struct AnyError: Error {}
+
+private class TestableListViewController: ListViewController {
+    var presentedVC: UIViewController?
+    
+    override func present(_ vc: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        presentedVC = vc
     }
+    
+}
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+private extension ListViewController {
+    func simulateFirstRequest() {
+        loadViewIfNeeded()
+        beginAppearanceTransition(true, animated: false)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func simulateReloadRequest() {
+        refreshControl?.sendActions(for: .valueChanged)
     }
+}
 
+
+private func makePremiumUser() -> User {
+    User(id: UUID(), name: "a name", isPremium: true)
+}
+
+private func makeFriend() -> Friend {
+    Friend(id: UUID(), name: "a name", phone: "phone1")
+}
+
+private class FriendsAPIStub: FriendsService {
+    var result: Result<[Friend], Error>
+    
+    init(result: Result<[Friend], Error>) {
+        self.result = result
+    }
+    
+    func loadFriends(completion: @escaping (Result<[Friend], Error>) -> Void) {
+        completion(result)
+    }
 }
